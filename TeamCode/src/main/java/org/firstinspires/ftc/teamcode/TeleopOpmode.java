@@ -33,7 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /*
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -49,8 +48,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
-public class BasicOpMode_Iterative extends OpMode
+@TeleOp(name="Teleop Opmode", group="Iterative OpMode")
+public class TeleopOpmode extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -115,34 +114,40 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
+        // Drivetrain code
+        double x = gamepad1.left_stick_x;
+        double rx = gamepad1.right_stick_x;
+        double y = -gamepad1.left_stick_y;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        frontLeftDrive.setPower(y + x + rx);
+        backLeftDrive.setPower(y - x + rx);
+        frontRightDrive.setPower(y - x - rx);
+        backRightDrive.setPower(y + x - rx);
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        // shooter
+        if (gamepad1.x) {
+            bottomShooter.setPower(1);
+            topShooter.setPower(1);
+        } else {
+            bottomShooter.setPower(0);
+            topShooter.setPower(0);
+        }
 
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
+        // intake
+        if (gamepad1.a) {
+            intake.setPower(1);
+        } else {
+            intake.setPower(0);
+        }
 
-        // Send calculated power to wheels
-        frontLeftDrive.setPower(leftPower);
-        frontRightDrive.setPower(rightPower);
+        // kicker
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        if (gamepad1.b) {
+            kicker.setPower(1);
+        } else {
+            kicker.setPower(0);
+        }
     }
-
     /*
      * Code to run ONCE after the driver hits STOP
      */
