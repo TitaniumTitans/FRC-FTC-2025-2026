@@ -34,6 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+//I don't know how to import external libraries.
+import edu.wpi.first.math.controller.PIDController;
+
 /*
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -118,6 +121,9 @@ public class TeleopOpmode extends OpMode
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
         double y = -gamepad1.left_stick_y;
+
+        PIDController pid = new PIDController(kP, kI, kD);
+        //How come having a dozen tabs open (50% google, 50% wpilib) does not help in the slightest?
 
         frontLeftDrive.setPower(y + x + rx);
         backLeftDrive.setPower(y - x + rx);
