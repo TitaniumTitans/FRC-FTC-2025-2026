@@ -34,8 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//I don't know how to import external libraries.
-import edu.wpi.first.math.controller.PIDController;
 
 /*
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -122,8 +120,10 @@ public class TeleopOpmode extends OpMode
         double rx = gamepad1.right_stick_x;
         double y = -gamepad1.left_stick_y;
 
-        PIDController pid = new PIDController(kP, kI, kD);
-        //How come having a dozen tabs open (50% google, 50% wpilib) does not help in the slightest?
+        double setPoint = 1;
+        double error = setPoint - bottomShooter.getPower();
+        double output = error * 1;
+
 
         frontLeftDrive.setPower(y + x + rx);
         backLeftDrive.setPower(y - x + rx);
@@ -132,8 +132,8 @@ public class TeleopOpmode extends OpMode
 
         // shooter
         if (gamepad1.x) {
-            bottomShooter.setPower(1);
-            topShooter.setPower(1);
+            bottomShooter.setPower(output);
+            topShooter.setPower(output);
         } else {
             bottomShooter.setPower(0);
             topShooter.setPower(0);
@@ -147,7 +147,6 @@ public class TeleopOpmode extends OpMode
         }
 
         // kicker
-
         if (gamepad1.b) {
             kicker.setPower(1);
         } else {
